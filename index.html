@@ -38,7 +38,7 @@ color:white;
 
 <body>
 
-<h2>Quanto você recomendaria nosso suporte?</h2>
+<h2>Qual a nota para o atendimento que acabou de receber?</h2>
 <p>Escolha uma nota de 0 a 10</p>
 
 <div id="notas"></div>
@@ -60,7 +60,7 @@ btn.innerText = i
 
 btn.onclick = function(){
 
-fetch("https://SEU-ENDPOINT-AQUI",{
+fetch("https://script.google.com/macros/s/AKfycbzh-06Oh4OlOEnkQokLO093w-UkovTSEI9ymenb3azoC1SkElid_YxQw1Cu4TPoUl3A/exec",{
 
 method:"POST",
 
@@ -91,4 +91,5 @@ document.getElementById("notas").appendChild(btn)
 </script>
 
 </body>
+
 </html>
