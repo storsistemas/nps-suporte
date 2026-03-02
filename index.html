@@ -42,45 +42,54 @@
 </div>
 
 <script>
-    // URL do seu Google Apps Script (COLE AQUI A URL QUE VOCÊ COPIOU)
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwNYlM_NEtNWEpRVkRRhFn05-btdGGoQEC2xcEbwOBwd_Tp9kYC2PxxH5y63BLhIW1b/exec";
+   // SUBSTITUA PELA SUA NOVA URL DO GOOGLE APPS SCRIPT
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzijGrIYkoOi3ZbuD-xjqXIqnARdgqKVZRjSzdwoRVv0lKc-Ec9vp1O9DCT40HlXfrs/exec";
 
-    // Verifica se já votou nesta sessão do navegador
-    window.onload = function() {
-        if (sessionStorage.getItem("jaVotou")) {
+// Controle de Sessão: Se já votou, pula direto para a tela de agradecimento
+window.onload = function() {
+    if (sessionStorage.getItem("nps_votado")) {
+        mostrarTela("step-obrigado");
+    }
+};
+
+function mostrarTela(id) {
+    // Esconde todas as telas
+    document.getElementById("step-voto").classList.add("hidden");
+    document.getElementById("step-registrando").classList.add("hidden");
+    document.getElementById("step-obrigado").classList.add("hidden");
+    
+    // Mostra a tela desejada
+    document.getElementById(id).classList.remove("hidden");
+}
+
+function enviarVoto(valorNota) {
+    // 1. Muda para tela de "Registrando"
+    mostrarTela("step-registrando");
+
+    // 2. Envia os dados para o Google Sheets
+    fetch(WEB_APP_URL, {
+        method: "POST",
+        mode: "no-cors", // Crucial para funcionar com Google Apps Script
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nota: valorNota })
+    })
+    .then(() => {
+        // 3. Salva na sessão do navegador que o usuário já votou
+        sessionStorage.setItem("nps_votado", "true");
+        
+        // 4. Aguarda 1.5 segundos (para o usuário ler o 'registrando') e mostra o 'obrigado'
+        setTimeout(() => {
             mostrarTela("step-obrigado");
-        }
-    };
-
-    function mostrarTela(id) {
-        document.getElementById("step-voto").classList.add("hidden");
-        document.getElementById("step-registrando").classList.add("hidden");
-        document.getElementById("step-obrigado").classList.add("hidden");
-        document.getElementById(id).classList.remove("hidden");
-    }
-
-    function enviarVoto(nota) {
-        mostrarTela("step-registrando");
-
-        fetch(WEB_APP_URL, {
-            method: "POST",
-            mode: "no-cors", // Necessário para evitar erros de CORS com Google Scripts
-            body: JSON.stringify({ nota: nota })
-        })
-        .then(() => {
-            // Salva na sessão que o usuário já votou
-            sessionStorage.setItem("jaVotou", "true");
-            setTimeout(() => {
-                mostrarTela("step-obrigado");
-            }, 1000); // Pequeno delay para o usuário ver a transição
-        })
-        .catch(err => {
-            console.error("Erro:", err);
-            alert("Erro ao enviar. Tente novamente.");
-            mostrarTela("step-voto");
-        });
-    }
+        }, 1500);
+    })
+    .catch(err => {
+        console.error("Erro ao votar:", err);
+        alert("Ops! Tivemos um problema. Tente novamente.");
+        mostrarTela("step-voto");
+    });
+}
 </script>
 
 </body>
 </html>
+
