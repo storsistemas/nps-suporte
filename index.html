@@ -38,21 +38,13 @@ color:white;
 
 <body>
 
-<h2>Qual a nota para o atendimento que acabou de receber?</h2>
+<h2>Quanto você recomendaria nosso suporte?</h2>
 <p>Escolha uma nota de 0 a 10</p>
 
 <div id="notas"></div>
 
 <script>
 
-// pegar dados do link
-const params = new URLSearchParams(window.location.search)
-
-const nome = params.get("nome")
-const telefone = params.get("telefone")
-const ticket = params.get("ticket")
-
-// criar botões de nota
 for(let i=0;i<=10;i++){
 
 let btn = document.createElement("button")
@@ -60,7 +52,12 @@ btn.innerText = i
 
 btn.onclick = function(){
 
-fetch("https://script.google.com/macros/s/AKfycbzh-06Oh4OlOEnkQokLO093w-UkovTSEI9ymenb3azoC1SkElid_YxQw1Cu4TPoUl3A/exec",{
+let agora = new Date()
+
+let data = agora.toLocaleDateString()
+let hora = agora.toLocaleTimeString()
+
+fetch("COLE_AQUI_URL_APPS_SCRIPT",{
 
 method:"POST",
 
@@ -70,17 +67,15 @@ headers:{
 
 body:JSON.stringify({
 
-nome:nome,
-telefone:telefone,
-ticket:ticket,
 nota:i,
-data:new Date().toISOString()
+data:data,
+hora:hora
 
 })
 
 })
 
-alert("Obrigado pela sua avaliação!")
+alert("Obrigado pela avaliação!")
 
 }
 
@@ -91,6 +86,4 @@ document.getElementById("notas").appendChild(btn)
 </script>
 
 </body>
-
 </html>
-
