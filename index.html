@@ -7,8 +7,8 @@
 <style>
 
 body{
-font-family: Arial;
-background:#f4f4f4;
+font-family:Arial;
+background:#f2f2f2;
 text-align:center;
 margin-top:60px;
 }
@@ -16,7 +16,7 @@ margin-top:60px;
 .container{
 background:white;
 padding:30px;
-width:400px;
+width:420px;
 margin:auto;
 border-radius:10px;
 box-shadow:0 0 10px rgba(0,0,0,0.1);
@@ -24,18 +24,17 @@ box-shadow:0 0 10px rgba(0,0,0,0.1);
 
 button{
 margin:5px;
-padding:10px 15px;
+padding:12px 16px;
 font-size:16px;
 border:none;
-border-radius:5px;
+border-radius:6px;
 cursor:pointer;
-background:#2ecc71;
 color:white;
 }
 
-button:hover{
-opacity:0.8;
-}
+.detrator{background:#e74c3c}
+.neutro{background:#f1c40f}
+.promotor{background:#2ecc71}
 
 </style>
 
@@ -51,7 +50,7 @@ opacity:0.8;
 
 <div id="botoes"></div>
 
-<p id="mensagem"></p>
+<h3 id="mensagem"></h3>
 
 </div>
 
@@ -62,24 +61,27 @@ window.onload = function(){
 const webAppURL = "https://script.google.com/macros/s/AKfycbzW2AQE4g0i2SMokfVZE7yvjOEh3fal2fjPyHq3NjiSpotd0ioBcZsEUPiOf57gB8Mb/exec"
 
 const params = new URLSearchParams(window.location.search)
-const ticket = params.get("nps") || "sem_ticket"
 
-const chaveVoto = "voto_" + ticket
+const ticket = params.get("ticket") || "sem_ticket"
+const telefone = params.get("tel") || "desconhecido"
 
 const container = document.getElementById("botoes")
-
-if(localStorage.getItem(chaveVoto)){
-
-document.getElementById("mensagem").innerHTML =
-"✅ Você já avaliou este atendimento."
-
-}else{
 
 for(let i=0;i<=10;i++){
 
 let btn = document.createElement("button")
 
 btn.innerText = i
+
+if(i <=6){
+btn.className="detrator"
+}
+else if(i <=8){
+btn.className="neutro"
+}
+else{
+btn.className="promotor"
+}
 
 btn.onclick = function(){
 
@@ -92,21 +94,21 @@ fetch(webAppURL,{
 method:"POST",
 body: JSON.stringify({
 
-ticket: ticket,
-nota: i,
-data: data,
-hora: hora
+ticket:ticket,
+telefone:telefone,
+nota:i,
+data:data,
+hora:hora
 
 })
 })
+
 .then(()=>{
-
-localStorage.setItem(chaveVoto,true)
 
 container.innerHTML=""
 
 document.getElementById("mensagem").innerHTML =
-"🎉 Obrigado pela avaliação!"
+"🎉 Obrigado pelo seu voto!"
 
 })
 
@@ -118,10 +120,7 @@ container.appendChild(btn)
 
 }
 
-}
-
 </script>
 
 </body>
 </html>
-
